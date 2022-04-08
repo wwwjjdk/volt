@@ -1,17 +1,18 @@
 package homework1;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MyVol extends Thread {
-    public static final int SIZE = 2;
-    AtomicInteger atomicInteger = new AtomicInteger(0);
+    private static final int SIZE = 2;
+    private AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
     public void plus() {
         for (int i = 0; i < SIZE; i++) {
-            if (atomicInteger.get() == 0) {
+            if (atomicBoolean.get() == false) {
                 System.out.printf("%s включает тумблер\n", Thread.currentThread().getName());
-                atomicInteger.getAndIncrement();
+                atomicBoolean.set(true);
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -24,9 +25,9 @@ public class MyVol extends Thread {
 
     public void check() {
         while (!isInterrupted()) {
-            if (atomicInteger.get() == 1) {
+            if (atomicBoolean.get() == true) {
                 System.out.printf("%s выключает тумблер\n", Thread.currentThread().getName());
-                atomicInteger.getAndDecrement();
+                atomicBoolean.set(false);
             }
 
         }
